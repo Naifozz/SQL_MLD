@@ -1,0 +1,26 @@
+2. Requete de selection
+    Afficher tous les livres d'un auteur spécifique (Asimov) :
+        SELECT LIVRE.ID_Livre, LIVRE.Titre, LIVRE.ISBN, LIVRE.Annee_Publication, LIVRE.Nb_Pages, LIVRE.Editeur FROM LIVRE
+        JOIN ECRITURE ON LIVRE.ID_Livre = ECRITURE.ID_Livre JOIN AUTEUR ON ECRITURE.ID_Auteur = AUTEUR.ID_Auteur
+        WHERE AUTEUR.Nom = 'Asimov';
+
+    Afficher tous les livres d'une catégorie donnée
+        SELECT LIVRE.ID_Livre, LIVRE.Titre, LIVRE.ISBN, LIVRE.Annee_Publication, LIVRE.Nb_Pages, LIVRE.Editeur FROM LIVRE
+        JOIN CATEGORIE_LIVRE ON LIVRE.ID_Livre = CATEGORIE_LIVRE.ID_Livre JOIN CATEGORIE ON CATEGORIE_LIVRE.ID_Categorie = CATEGORIE.ID_Categorie 
+        WHERE CATEGORIE.Nom = 'Fantasy';
+
+    Lister les auteurs britannique
+        SELECT Nom, Prenom, Date_Naissance FROM AUTEUR WHERE Nationalite = 'Britannique';
+
+3. Requete de jointure
+    Afficher les livres avec leurs auteurs et catégories
+        SELECT l.Titre, a.Nom, c.Nom FROM LIVRE l
+        JOIN ECRITURE e ON l.ID_Livre = e.ID_Livre JOIN AUTEUR a ON e.ID_Auteur = a.ID_Auteur
+        JOIN CATEGORIE_LIVRE cl ON l.ID_Livre = cl.ID_Livre JOIN CATEGORIE c ON cl.ID_Categorie = c.ID_Categorie; 
+
+    Afficher le nombre de livres par catégorie
+        SELECT c.Nom, COUNT(cl.ID_Livre) AS Nombre_Livres FROM CATEGORIE c
+        JOIN CATEGORIE_LIVRE cl ON c.ID_Categorie = cl.ID_Categorie
+        GROUP BY c.ID_Categorie, c.Nom;
+    
+    Trouver l'auteur ayant écrit le plus de livres
