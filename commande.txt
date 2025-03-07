@@ -10,9 +10,10 @@
         WHERE CATEGORIE.Nom = 'Fantasy';
 
     Lister les auteurs britannique
-        SELECT Nom, Prenom, Date_Naissance FROM AUTEUR WHERE Nationalite = 'Britannique';
+        SELECT a.Nom, a.Prenom FROM AUTEUR a   
+        JOIN PAYS p ON a.ID_Pays = p.ID_Pays
+        WHERE P.NOM = 'Britannique';
 
-3. Requete de jointure
     Afficher les livres avec leurs auteurs et catégories
         SELECT l.Titre, a.Nom, c.Nom FROM LIVRE l
         JOIN ECRITURE e ON l.ID_Livre = e.ID_Livre JOIN AUTEUR a ON e.ID_Auteur = a.ID_Auteur
@@ -24,3 +25,26 @@
         GROUP BY c.ID_Categorie, c.Nom;
     
     Trouver l'auteur ayant écrit le plus de livres
+        SELECT a.Nom, a.Prenom, COUNT(E.ID_Livre) AS NombreDeLivres FROM AUTEUR a
+        JOIN ECRITURE e ON a.ID_Auteur = e.ID_Auteur
+        GROUP BY a.ID_Auteur
+        ORDER BY NombreDeLivres DESC
+        LIMIT 1; 
+
+3. Mise a jour et suppression
+
+    Modifier le titre d'un livre
+        UPDATE LIVRE SET Titre = 'Le Robot' WHERE ID_Livre = 2;
+
+    Supprimer un livre
+        PRAGMA foreign_keys = OFF;
+
+        DELETE FROM ECRITURE WHERE ID_Livre = 1;
+        DELETE FROM CATEGORIE_LIVRE WHERE ID_Livre = 1;
+        DELETE FROM EXEMPLAIRE WHERE ID_Livre = 1;
+        DELETE FROM LIVRE WHERE ID_Livre = 1;
+
+        PRAGMA foreign_keys = ON;
+
+    Mettre a jour la nationalité d'un auteur
+        UPDATE AUTEUR SET ID_Pays = 2 WHERE Nom = 'Asimov';
