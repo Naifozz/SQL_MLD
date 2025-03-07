@@ -39,7 +39,7 @@ function insertData(db) {
         "INSERT INTO CATEGORIE_LIVRE (ID_Categorie, ID_Livre) VALUES (?, ?)";
     const insertMembre = "INSERT INTO MEMBRE (Nom, Prenom, Email, Adresse) VALUES (?, ?, ?, ?)";
     const insertEmprunt =
-        "INSERT INTO EMPRUNT (ID_Membre, ID_Exemplaire, Date_Emprunt, Date_Retour_Prevue) VALUES (?, ?, ?, ?)";
+        "INSERT INTO EMPRUNT (ID_Membre, ID_Exemplaire, Date_Emprunt) VALUES (?, ?, ?)";
     const insertExemplaire =
         "INSERT INTO EXEMPLAIRE (ID_Livre, Etat, Disponibilite, Date_Acquisition) VALUES (?, ?, ?, ?)";
     const insertPays = "INSERT INTO PAYS (Nom) VALUES (?)";
@@ -103,9 +103,9 @@ function insertData(db) {
         db.run(insertMembre, ["Membre 3", "Prenom 3", "membre3@example.com", "Adresse 3"]);
 
         // Insérer les emprunts
-        db.run(insertEmprunt, [1, 1, "2025-03-06", "2025-03-20"]);
-        db.run(insertEmprunt, [2, 2, "2025-03-06", "2025-03-20"]);
-        db.run(insertEmprunt, [3, 3, "2025-03-06", "2025-03-20"]);
+        db.run(insertEmprunt, [1, 1, "2025-03-06"]);
+        db.run(insertEmprunt, [2, 2, "2025-03-06"]);
+        db.run(insertEmprunt, [3, 3, "2025-03-06"]);
 
         // Associer les auteurs aux livres
         db.run(insertEcriture, [1, 1, "Auteur"]); // Isaac Asimov - Fondation

@@ -43,7 +43,7 @@ CREATE TABLE `EMPRUNT` (
   `ID_Membre` integer NOT NULL,
   `ID_Exemplaire` integer NOT NULL,
   `Date_Emprunt` date DEFAULT (CURRENT_DATE),
-  `Date_Retour_Prevue` date NOT NULL,
+  `Date_Retour_Prevue` date,
   `Date_Retour_Effective` date,
   FOREIGN KEY (`ID_Membre`) REFERENCES `MEMBRE` (`ID_Membre`),
   FOREIGN KEY (`ID_Exemplaire`) REFERENCES `EXEMPLAIRE` (`ID_Exemplaire`)
@@ -71,6 +71,15 @@ CREATE TABLE `EXEMPLAIRE` (
   `Date_Acquisition` date,
   FOREIGN KEY (`ID_Livre`) REFERENCES `LIVRE` (`ID_Livre`)
 );
+
+CREATE TRIGGER IF NOT EXISTS set_date_retour_prevue
+AFTER INSERT ON EMPRUNT
+FOR EACH ROW
+BEGIN
+    UPDATE EMPRUNT
+    SET Date_Retour_Prevue = DATE(NEW.Date_Emprunt, '+15 days')
+    WHERE ID_Emprunt = NEW.ID_Emprunt;
+END;
 
 CREATE INDEX `LIVRE_index_0` ON `LIVRE` (`Titre`);
 CREATE INDEX `AUTEUR_index_0` ON `AUTEUR` (`Nom`);

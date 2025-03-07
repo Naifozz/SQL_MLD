@@ -8,6 +8,17 @@ async function runQueries() {
     });
 
     try {
+        await db.run(`
+            CREATE VIEW IF NOT EXISTS LivresAuteursCategories AS
+            SELECT L.Titre, A.Nom AS Auteur, C.Nom AS Categorie
+            FROM LIVRE L
+            JOIN ECRITURE E ON L.ID_Livre = E.ID_Livre
+            JOIN AUTEUR A ON E.ID_Auteur = A.ID_Auteur
+            JOIN CATEGORIE_LIVRE CL ON L.ID_Livre = CL.ID_Livre
+            JOIN CATEGORIE C ON CL.ID_Categorie = C.ID_Categorie;
+        `);
+        console.log("Vue LivresAuteursCategories créée.");
+
         await db.run("UPDATE LIVRE SET Titre = ? WHERE ID_Livre = ?", ["Nouveau Titre", 1]);
         console.log("Titre du livre modifié.");
 
@@ -31,7 +42,7 @@ async function runQueries() {
         `,
             [1]
         );
-        console.log("Livres de l'auteur spécifique:", livresAuteur);
+        console.table(livresAuteur);
 
         const livresCategorie = await db.all(
             `
@@ -43,7 +54,7 @@ async function runQueries() {
         `,
             ["Science-fiction"]
         );
-        console.log("Livres de la catégorie donnée:", livresCategorie);
+        console.table(livresCategorie);
 
         const auteursBritanniques = await db.all(`
             SELECT A.Nom, A.Prenom
@@ -51,17 +62,13 @@ async function runQueries() {
             JOIN PAYS P ON A.ID_Pays = P.ID_Pays
             WHERE P.Nom = 'Britannique'
         `);
-        console.log("Auteurs britanniques:", auteursBritanniques);
+        console.table(auteursBritanniques);
 
         const livresAuteursCategories = await db.all(`
-            SELECT L.Titre, A.Nom AS Auteur, C.Nom AS Categorie
-            FROM LIVRE L
-            JOIN ECRITURE E ON L.ID_Livre = E.ID_Livre
-            JOIN AUTEUR A ON E.ID_Auteur = A.ID_Auteur
-            JOIN CATEGORIE_LIVRE CL ON L.ID_Livre = CL.ID_Livre
-            JOIN CATEGORIE C ON CL.ID_Categorie = C.ID_Categorie
+            SELECT Titre, Auteur, Categorie
+            FROM LivresAuteursCategories
         `);
-        console.log("Livres avec leurs auteurs et catégories:", livresAuteursCategories);
+        console.table(livresAuteursCategories);
 
         const nombreLivresParCategorie = await db.all(`
             SELECT C.Nom AS Categorie, COUNT(L.ID_Livre) AS NombreDeLivres
@@ -70,7 +77,7 @@ async function runQueries() {
             JOIN LIVRE L ON CL.ID_Livre = L.ID_Livre
             GROUP BY C.ID_Categorie
         `);
-        console.log("Nombre de livres par catégorie:", nombreLivresParCategorie);
+        console.table(nombreLivresParCategorie);
 
         const auteurPlusDeLivres = await db.get(`
             SELECT A.Nom, A.Prenom, COUNT(E.ID_Livre) AS NombreDeLivres
@@ -80,7 +87,7 @@ async function runQueries() {
             ORDER BY NombreDeLivres DESC
             LIMIT 1
         `);
-        console.log("Auteur ayant écrit le plus de livres:", auteurPlusDeLivres);
+        console.table(auteurPlusDeLivres);
     } catch (error) {
         console.error("Erreur lors de l'exécution des requêtes:", error.message);
     } finally {
